@@ -19,7 +19,7 @@ class Product(models.Model):
     product_id                  = models.CharField(primary_key=True,unique=True,max_length=30)
     product_title               = models.CharField(max_length=255)
     product_description         = models.TextField(null=True)
-    product_image               = models.ImageField(upload_to='static/uploads/')
+    product_image               = models.ImageField(upload_to='static/uploads/',null=True)
     product_price               = models.FloatField(max_length=10)
     currency                    = models.CharField(max_length=20,null=True,choices=(('IN',"Indian Rupee"),('USD',"US Dollar")))          
     discounted_value            = models.IntegerField(null=True)
