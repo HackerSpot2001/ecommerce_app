@@ -7,8 +7,13 @@ from random import choice
 from django.db.models import Q 
 from datetime import datetime
 from django.shortcuts import render
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
+from time import time
 # Create your views here.
 
+
+""" API to get all endpoinds """
 @api_view(['GET'])
 def endpoints(req):
     data = ["/list_products","/get_product/:name",'/create_product',"/update_product",'/delete_product',"/productpage"]
@@ -16,11 +21,14 @@ def endpoints(req):
 
 
 
+""" Route to get html product page """
 @api_view(['GET'])
 def productpage(req):
     return render(req,'index.html')
 
 
+
+""" API to get details of a particular product """ 
 @api_view(['GET'])
 def get_product(req,product):
     try:
@@ -37,8 +45,11 @@ def get_product(req,product):
     return Response(response,status=200)
 
 
+
+""" API to get all products """ 
 @api_view(['GET'])
 def list_products(req):
+    strtime = time()
     try:
         products_rs = Product.objects.filter(is_active=True).all()
         serialized_data = ProductSerializer(products_rs,many=True) 
@@ -49,12 +60,13 @@ def list_products(req):
         print("Error: ", str(e))
         response = {"apiresponse":{"type":"ERROR","severity":"ERROR","message":"There is some error."}}
         
-
+    ftime = time() - strtime
+    print(ftime)
     return Response(response,status=200)
 
 
 
-
+""" API to delete product """ 
 @api_view(http_method_names=['GET',"POST"])
 def delete_product(req):
     try:
@@ -83,10 +95,8 @@ def delete_product(req):
 
 
 
-
-
-
-@api_view(['GET','POST'])
+""" API to create products """
+@api_view(http_method_names=['GET','POST'])
 def create_product(req):
     try:
         fields = [ "category" , "product_title" , "product_description" , "product_price" , "product_image" , "currency" , "discounted_value" , "discounted_type" ]
@@ -122,7 +132,7 @@ def create_product(req):
 
 
 
-
+""" API to update products """
 @api_view(['GET','POST'])
 def update_product(req):
     try:
@@ -159,13 +169,12 @@ def update_product(req):
     return Response(response,status=200)
 
 
-
 def gen_id(initials="",length=15):
     chars= ascii_uppercase + digits
     return initials + ''.join(choice(chars) for _ in range(length))  
 
 
-def verify_fields (fields:list,data:dict):
+def verify_fields (fields:list,data:dict):  
     for i in fields:
         if i not in data.keys():
             data[i] = ""
