@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Product Page</title>
+    <style>
+    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+</head>
+
+<body>
+
+    <div class="container my-4">
+        <a href="#" class="btn btn-primary" data-bs-toggle="modal" onclick="getDetails('',0)" data-bs-target="#exampleModal">Add Product</a>
+
+        <div id="allproducts" class="row row-cols-3"></div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Product Details</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="ajax" id="updateform" action="post" enctype="multipart/form-data">
+                            <input type="hidden" name="product_id" id="product_id" value="" readonly required>
+                            <div class="mb-2">
+                                <label for="product_title" class="form-label">Product Title</label>
+                                <input type="text" class="form-control" id="product_title" name="product_title"
+                                    required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="category" class="form-label">Category</label>
+                                <select name="category" class="form-select" aria-label="Default select example"
+                                    id="category">
+                                    <option value="GENERAL">GENERAL</option>
+                                    <option value="TECHNOLOGY">TECHNOLOGY</option>
+                                </select>
+                            </div>
+                            <!-- <div class="mb-2">
+                                <label for="formFileSm" class="form-label">Product Image</label>
+                                <input class="form-control form-control-sm" name="product_image" id="formFileSm"
+                                    type="file">
+                            </div> -->
+                            <div class="mb-2">
+                                <div>
+                                    <label for="product_price" class="form-label">Product Price</label>
+                                    <input type="number" class="form-control" id="product_price" name="product_price"
+                                        required>
+                                    <label for="currency" class="form-label">Currency UOM </label>
+                                    <select name="currency" class="form-select" id="currency">
+                                        <option value="IN"> Indian Rupee (&#8377;)</option>
+                                        <option value="USD"> US Dollar (&#36;)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="discounted_type" class="form-label">Discount Type </label>
+                                <select name="discounted_type" class="form-select" aria-label="Default select example"
+                                    id="discounted_type">
+                                    <option value="pct">Percentage</option>
+                                    <option value="amt">Amount</option>
+                                </select>
+                            </div>
+                            <div class="mb-2">
+                                <label for="discounted_value" class="form-label">Discount Value </label>
+                                <input type="number" class="form-control" id="discounted_value" name="discounted_value"
+                                    required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="product_description" class="form-label">Product Description</label>
+                                <textarea class="form-control" id="product_description" name="product_description"
+                                    rows="3" required></textarea>
+                            </div>
+                            <div id="update_section">
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+                                onclick="delete_product(this)">Delete</button>
+                                <button type="button" class="btn btn-primary" onclick="update_or_create(this,'/update_product')">Update</button>
+                            </div>
+                            <div id="create_section">
+                                <button type="reset" class="btn btn-danger" data-bs-dismiss="modal">Reset</button>
+                                <button type="button" class="btn btn-primary" onclick="update_or_create(this,'/create_product')">Create</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+        crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script>
+        var currency = {
+            "IN": "&#8377;",
+            "USD": "&#36;",
+        }
+
+
+        function update_or_create(e,url) {
+            var form = e.parentNode.parentNode;
+            console.log(form)
+
+            var fData = new FormData(form);
+            var jsonData = {};
+            for (let [name, value] of fData) {
+                jsonData[name] = value
+            }
+            console.log(jsonData)
+            fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(jsonData) }).then(res => res.json())
+                .then(res => {
+                    if (res.apiresponse.type == "OK") {
+                        Toastify({
+                            text: res.apiresponse.message,
+                            duration: 3000,
+                            close: true,
+                            gravity: "top", // `top` or `bottom`
+                            position: "center", // `left`, `center` or `right`
+                            stopOnFocus: true, // Prevents dismissing of toast on hover
+                            style: {
+                                background: "linear-gradient(to right, #00b09b, #96c93d)",
+                            },
+                            onClick: function () { } // Callback after click
+                        }).showToast();
+                    getProducts()
+
+                    }
+                }).catch(err => {
+                    console.log("Error")
+                })
+
+        }
+
+
+
+        function getProducts() {
+            var allproducts = document.getElementById('allproducts')
+            allproducts.innerHTML = "";
+            fetch("/list_products", { method: "GET", mode: "no-cors" }).then(res => res.json()).then(res => {
+                if (res.apiresponse.type === "OK") {
+                    records = res.records
+                    Array.from(records).forEach(ele => {
+                        var product_description = String(ele.product_description).substr(0, 50);
+                        var html =
+                            `
+                            <div class="card mx-2 my-2" style="width: 18rem;">
+                                <img src="static${ele.product_image}" class="card-img-top" alt="${ele.product_id}">
+                                <strong class="text-left"> &nbsp; &nbsp;${ele.category}</strong>
+                                <strong class="text-left"> &nbsp; &nbsp; ${currency[ele.currency]}${ele.product_price}</strong>
+                                <div class="card-body">
+                                    <h5 class="card-title"
+                                        style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;text-transform: capitalize;">
+                                        ${ele.product_title}</h5>
+                                    <p class="card-text">${product_description}</p>
+                                    <a href="#" class="btn btn-primary" data-bs-toggle="modal" onclick="getDetails('${ele.product_id}',1)" data-bs-target="#exampleModal">Modify</a>
+                                </div>
+                            </div>
+                            `
+                        allproducts.innerHTML += html;
+                    })
+                } else {
+                    console.log("There is some Error")
+                    allproducts.innerHTML = "No data found."
+                }
+            }).catch(error => {
+                console.log("There is some Error")
+                allproducts.innerHTML = "No data found."
+            })
+        }
+
+        function delete_product(e) {
+            var product = e.parentNode
+            var product_id = product.querySelector("input[name=product_id]").value
+
+            if (confirm("Do you really want to delete this product?")) {
+                if ((product_id !== "") && (product_id !== null) && (product_id !== undefined)) {
+                    fetch(
+                        '/delete_product',
+                        {
+                            method: "POST",
+                            body: JSON.stringify({ "product_id": product_id }),
+                            headers: { "Content-Type": "application/json" }
+                        }
+                    ).then(res => res.json()).then(res => {
+                        if (res.apiresponse.type == "OK") {
+                            Toastify({
+                                text: res.apiresponse.message,
+                                duration: 3000,
+                                close: true,
+                                gravity: "top", // `top` or `bottom`
+                                position: "center", // `left`, `center` or `right`
+                                stopOnFocus: true, // Prevents dismissing of toast on hover
+                                style: {
+                                    background: "linear-gradient(to right, #00b09b, #96c93d)",
+                                },
+                                onClick: function () { } // Callback after click
+                            }).showToast();
+                        }
+                    }).catch(err => {
+                        console.log("Error: ", err)
+                        Toastify({
+                            text: "There is some error",
+                            duration: 3000,
+                            close: true,
+                            gravity: "top", // `top` or `bottom`
+                            position: "center", // `left`, `center` or `right`
+                            stopOnFocus: true, // Prevents dismissing of toast on hover
+                            style: {
+                                background: "red",
+                                color: "white"
+                            },
+                            onClick: function () { } // Callback after click
+                        }).showToast();
+                    })
+                } else {
+                    Toastify({
+                        text: res.apiresponse.message,
+                        duration: 3000,
+                        close: true,
+                        gravity: "top", // `top` or `bottom`
+                        position: "center", // `left`, `center` or `right`
+                        stopOnFocus: true, // Prevents dismissing of toast on hover
+                        style: {
+                            background: "red",
+                            color: "white"
+                        },
+                        onClick: function () { } // Callback after click
+                    }).showToast();
+                }
+                getProducts()
+            }
+        }
+
+        function getDetails(product_id, bool) {
+            var form = document.getElementById("updateform")
+            if (bool == 1) {
+                document.getElementById('create_section').style.display = "none"
+                document.getElementById('update_section').style.display = "block"
+                fetch(`/get_product/${product_id}`).then(res => res.json()).then(res => {
+                    var record = res.records;
+                    var allinps = form.querySelectorAll('input');
+                    var allSelects = form.querySelectorAll('select');
+                    allinps.forEach(ele => {
+                        if (ele.name !== "product_image") {
+                            ele.value = record[ele.name]
+                        }
+                    })
+                    allSelects.forEach(ele => {
+                        ele.value = record[ele.name]
+                    })
+                    var product_description = form.getElementsByTagName('textarea')[0]
+                    product_description.innerText = record[product_description.name]
+                })
+            }else{
+                form.reset()
+                var product_description = form.getElementsByTagName('textarea')[0]
+                product_description.innerText = ""
+                document.getElementById('create_section').style.display = "block"
+                document.getElementById('update_section').style.display = "none"
+            }
+            // var formdata = new FormData(form);
+            // for (let [name, value] of formdata){
+            //     console.log(name, ", ", value)
+            // }
+        }
+
+
+        getProducts()
+
+    </script>
+</body>
+
+</html>
