@@ -57,12 +57,22 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'ecomm_db',
-        'USER': 'web',
-        'PASSWORD': 'password',
-        'HOST': 'localhost',
+        'USER': 'hs2001',
+        'PASSWORD': '6fcE2NBjFttJAMC',
+        'HOST': 'hs2001.mysql.pythonanywhere-services.com',
         'PORT': '3306',
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'ecomm_db',
+#         'USER': 'web',
+#         'PASSWORD': 'password',
+#         'HOST': 'localhost',
+#         'PORT': '3306',
+#     }
+# }
 
 
 # DATABASES = {
