@@ -3,7 +3,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-rop(7!*bwf_v_=2nx_t3ij@(+2n+&7j7iw7bz7z@t_o%o=68yh'
 DEBUG = True
-ALLOWED_HOSTS = ["127.0.0.1","0.0.0.0","localhost"]
+ALLOWED_HOSTS = ["127.0.0.1","0.0.0.0","localhost","hs2001.pythonanywhere.com"]
 
 
 # Application definition
