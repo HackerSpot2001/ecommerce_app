@@ -179,7 +179,7 @@
         }
 
         function delete_product(e) {
-            var product = e.parentNode
+            var product = e.parentNode.parentNode
             var product_id = product.querySelector("input[name=product_id]").value
 
             if (confirm("Do you really want to delete this product?")) {
@@ -206,6 +206,8 @@
                                 onClick: function () { } // Callback after click
                             }).showToast();
                         }
+                        getProducts()
+
                     }).catch(err => {
                         console.log("Error: ", err)
                         Toastify({
@@ -237,7 +239,6 @@
                         onClick: function () { } // Callback after click
                     }).showToast();
                 }
-                getProducts()
             }
         }
 
