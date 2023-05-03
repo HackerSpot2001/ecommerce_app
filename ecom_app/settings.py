@@ -4,7 +4,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-rop(7!*bwf_v_=2nx_t3ij@(+2n+&7j7iw7bz7z@t_o%o=68yh'
 DEBUG = True
 ALLOWED_HOSTS = ["127.0.0.1", "0.0.0.0",
-                 "localhost", "hs2001.pythonanywhere.com"]
+                 "localhost", "hs2001.pythonanywhere.com","hs2001.mysql.pythonanywhere-services.com"]
 
 
 # Application definition
@@ -59,7 +59,7 @@ WSGI_APPLICATION = 'ecom_app.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ecomm_db',
+        'NAME': 'hs2001$ecomm_db',
         'USER': 'hs2001',
         'PASSWORD': '6fcE2NBjFttJAMC',
         'HOST': 'hs2001.mysql.pythonanywhere-services.com',
@@ -120,9 +120,10 @@ STATICFILES_DIRS = [
 
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-CORS_ALLOWED_ORIGINS = ALLOWED_HOSTS
-CORS_ORIGIN_ALLOW_ALL = True
-ADMIN_ENABLED = False
+
+# CORS_ALLOWED_ORIGINS = ALLOWED_HOSTS
+# CORS_ORIGIN_ALLOW_ALL = True
+# ADMIN_ENABLED = False
 
 # CORS_ALLOW_METHODS = [
 #     'DELETE',
